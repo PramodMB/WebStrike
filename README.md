@@ -14,7 +14,7 @@ A powerful web application security scanner built by Pramod ⚔️
 
 ## 🚀 Setup (Kali / Ubuntu)
 ```bash
-git clone https://github.com/yourusername/webstrike.git
+git clone https://github.com/PramodMB/webstrike.git
 cd webstrike
 chmod +x setup.sh
 ./setup.sh
