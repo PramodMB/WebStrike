@@ -18,3 +18,5 @@ git clone https://github.com/yourusername/webstrike.git
 cd webstrike
 chmod +x setup.sh
 ./setup.sh
+
+To run the tool - python3 webstrike.py
