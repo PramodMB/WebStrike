@@ -6,9 +6,9 @@ from modules.param_discovery import run_arjun, run_paramspider
 from modules.dns_enum import run_dnsrecon, run_dnsenum
 from modules.vuln_scan import run_nuclei, run_nikto, run_wpscan
 from modules.exploit_poc import run_dalfox, run_sqlmap, run_open_redirect_check
-from modules.utils import save_output
 from modules.report_generator import generate_report
 import time
+
 
 def show_banner():
     print(r"""
@@ -31,6 +31,14 @@ def show_banner():
                      by Pramod ⚔️
 """)
 
+
+def print_and_display(label, data):
+    print(f"\n{label}\n{'-' * len(label)}")
+    if data:
+        for line in data:
+            print(line)
+    else:
+        print("No data found.")
 
 def get_domain():
     while True:
@@ -216,10 +224,12 @@ def run_tech_detect(urls, tool_choice):
         return detect_with_custom(urls)
 
 def main():
+    show_banner()
+
     while True:
         domain = get_domain()
         tools = choose_subenum_tools()
-        
+
         if tools == 'back':
             print("🔄 Restarting...\n")
             continue
@@ -227,8 +237,7 @@ def main():
         print(f"\n[*] Running Subdomain Enumeration on {domain} using: {', '.join(tools)}")
         subdomains = run_subdomain_enum(domain, tools)
 
-        print(f"\n✅ Found {len(subdomains)} unique subdomains.")
-        save_output("output/subdomains.txt", subdomains)
+        print_and_display("✅ Found Subdomains", subdomains)
 
         yn = input("\n🔎 Do you want to check which subdomains are live? (y/n): ").strip().lower()
         if yn == 'y':
@@ -236,8 +245,7 @@ def main():
             if live_tool == 'back':
                 continue
             live_hosts = run_live_check(subdomains, live_tool)
-            print(f"\n✅ Found {len(live_hosts)} live subdomains.")
-            save_output("output/live_hosts.txt", live_hosts)
+            print_and_display("✅ Live Subdomains", live_hosts)
         else:
             live_hosts = []
 
@@ -248,8 +256,7 @@ def main():
                 continue
             targets = live_hosts if live_hosts else subdomains
             tech_info = run_tech_detect(targets, tech_tool)
-            save_output("output/tech_stack.txt", tech_info)
-            print(f"\n✅ Tech fingerprinting complete. Saved to output/tech_stack.txt")
+            print_and_display("✅ Tech Stack Info", tech_info)
 
         yn = input("\n📁 Do you want to brute-force directories/files? (y/n): ").strip().lower()
         if yn == 'y':
@@ -264,8 +271,7 @@ def main():
             else:
                 results = run_dirsearch(targets, wordlist)
 
-            save_output("output/dir_enum_results.txt", results)
-            print(f"\n✅ Directory brute-force complete. Results saved.")
+            print_and_display("✅ Directory Brute-force Results", results)
 
         yn = input("\n🧩 Do you want to discover parameters for endpoints? (y/n): ").strip().lower()
         if yn == 'y':
@@ -279,8 +285,7 @@ def main():
             else:
                 results = run_paramspider(targets)
 
-            save_output("output/param_discovery_results.txt", results)
-            print(f"\n✅ Parameter discovery complete. Results saved.")
+            print_and_display("✅ Parameter Discovery Results", results)
 
         yn = input("\n🌐 Do you want to perform DNS enumeration? (y/n): ").strip().lower()
         if yn == 'y':
@@ -293,8 +298,7 @@ def main():
             else:
                 results = run_dnsenum(domain)
 
-            save_output("output/dns_enum_results.txt", results)
-            print(f"\n✅ DNS enumeration complete. Results saved.")
+            print_and_display("✅ DNS Enumeration Results", results)
 
         yn = input("\n🔥 Do you want to scan for vulnerabilities? (y/n): ").strip().lower()
         if yn == 'y':
@@ -310,8 +314,7 @@ def main():
             else:
                 results = run_wpscan(targets)
 
-            save_output("output/vuln_scan_results.txt", results)
-            print(f"\n✅ Vulnerability scan complete. Results saved.")
+            print_and_display("✅ Vulnerability Scan Results", results)
 
         yn = input("\n🧪 Do you want to run exploit PoC checks? (y/n): ").strip().lower()
         if yn == 'y':
@@ -327,8 +330,7 @@ def main():
             else:
                 results = run_open_redirect_check(targets)
 
-            save_output("output/exploit_poc_results.txt", results)
-            print(f"\n✅ Exploit PoC scan complete. Results saved.")
+            print_and_display("✅ Exploit PoC Results", results)
 
         yn = input("\n🧾 Do you want to generate an HTML + PDF report? (y/n): ").strip().lower()
         if yn == 'y':
@@ -336,6 +338,7 @@ def main():
             print(f"\n✅ Report generated: {html_path}\n✅ PDF version: {pdf_path}")
 
         break
+
 
 if __name__ == '__main__':
     main()
