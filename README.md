@@ -1,5 +1,5 @@
 # WebStrike 🛡️
-A powerful web application security scanner built by Pramod ⚔️
+A powerful web application security scanner ⚔️
 
 ## 🧰 Features
 - Subdomain Enum (subfinder, amass, crt.sh)
